@@ -1,5 +1,7 @@
 package com.example.test_map
 
+import android.location.Location
+import android.location.LocationListener
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
@@ -10,7 +12,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener {
 
     private lateinit var mMap: GoogleMap
 
@@ -39,5 +41,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val sharqa = LatLng(25.348766, 55.405403)
         mMap.addMarker(MarkerOptions().position(sharqa).title("Marker in sharqa"))
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sharqa))
+        mMap.setOnMapClickListener {
+            mMap.clear()
+            mMap.addMarker(MarkerOptions().position(it))
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(it))
+        }
+    }
+
+    override fun onLocationChanged(location: Location) {
+        val latitude = location.latitude
+        val longitude = location.longitude
+        val latLng = LatLng(latitude, longitude)
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15F))
     }
 }
